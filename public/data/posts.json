@@ -1,0 +1,25 @@
+[
+  {
+    "title": "ClaudeCode+Glm4.6搭建Blog",
+    "slug": "ClaudeCode+Glm4.6搭建Blog",
+    "date": "2025-10-16",
+    "tags": [
+      "生活",
+      "娱乐"
+    ],
+    "summary": "",
+    "cover": "/assets/Pasted%20image%2020251015105358.png",
+    "published": true
+  },
+  {
+    "title": "ai-coding-claude-templates",
+    "slug": "ai-coding-claude-templates",
+    "date": "2025-10-16",
+    "tags": [
+      "Claude"
+    ],
+    "summary": "",
+    "cover": "",
+    "published": true
+  }
+]
