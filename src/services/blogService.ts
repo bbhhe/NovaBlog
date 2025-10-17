@@ -1,3 +1,5 @@
+import { getAppConfig, createUrl } from '../config'
+
 // 博客文章列表接口
 export interface BlogPostListItem {
   title: string
@@ -27,23 +29,53 @@ interface ApiResponse<T> {
  * 博客数据服务类
  */
 class BlogService {
-  private baseUrl = '/data'
   private cache = new Map<string, any>()
+  private config = getAppConfig()
+
+  /**
+   * 获取API基础URL
+   */
+  private getApiUrl(path: string): string {
+    return createUrl(path, this.config)
+  }
+
+  /**
+   * 处理图片路径，确保在生产环境有正确的base路径
+   */
+  private getImagePath(originalPath: string): string {
+    // 使用createUrl函数处理路径
+    return createUrl(originalPath, this.config)
+  }
+
+  /**
+   * 处理HTML内容中的图片路径
+   */
+  private processHtmlImages(html: string): string {
+    const config = this.config
+    return html.replace(
+      /src="\/assets\/([^"]+)"/g,
+      `src="${config.basePath}assets/$1"`
+    )
+  }
 
   /**
    * 获取博客文章列表
    */
   async getBlogPosts(): Promise<ApiResponse<BlogPostListItem[]>> {
     try {
-      const response = await fetch(`${this.baseUrl}/posts.json`)
+      const response = await fetch(this.getApiUrl('/data/posts.json'))
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       const data = await response.json()
 
-      // 过滤已发布的文章并按日期排序
+      // 过滤已发布的文章并按日期排序，同时处理图片路径
       const publishedPosts = data
         .filter((post: BlogPostListItem) => post.published)
+        .map((post: BlogPostListItem) => ({
+          ...post,
+          cover: post.cover ? this.getImagePath(post.cover) : post.cover
+        }))
         .sort((a: BlogPostListItem, b: BlogPostListItem) =>
           new Date(b.date).getTime() - new Date(a.date).getTime()
         )
@@ -77,7 +109,7 @@ class BlogService {
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/posts/${slug}.json`)
+      const response = await fetch(this.getApiUrl(`/data/posts/${slug}.json`))
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error(`Blog post '${slug}' not found`)
@@ -89,6 +121,16 @@ class BlogService {
       // 只有已发布的文章才能访问
       if (!data.published) {
         throw new Error(`Blog post '${slug}' is not published`)
+      }
+
+      // 处理图片路径
+      if (data.cover) {
+        data.cover = this.getImagePath(data.cover)
+      }
+
+      // 处理HTML内容中的图片路径
+      if (data.html) {
+        data.html = this.processHtmlImages(data.html)
       }
 
       // 计算阅读时间（如果未提供）
