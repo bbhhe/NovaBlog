@@ -2,7 +2,7 @@
   {
     "title": "ClaudeCode+Glm4.6搭建Blog",
     "slug": "ClaudeCode+Glm4.6搭建Blog",
-    "date": "2025-10-16",
+    "date": "2025-10-20",
     "tags": [
       "生活",
       "娱乐"
@@ -12,9 +12,20 @@
     "published": true
   },
   {
+    "title": "Spring的事务管理",
+    "slug": "Spring的事务管理",
+    "date": "2025-10-20",
+    "tags": [
+      "Spring"
+    ],
+    "summary": "",
+    "cover": "",
+    "published": true
+  },
+  {
     "title": "ai-coding-claude-templates",
     "slug": "ai-coding-claude-templates",
-    "date": "2025-10-16",
+    "date": "2025-10-20",
     "tags": [
       "Claude"
     ],
